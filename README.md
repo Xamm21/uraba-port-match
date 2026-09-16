@@ -18,13 +18,27 @@ Flujo: `React -> Supabase Client -> Supabase Auth -> PostgreSQL + RLS + RPC`
 - **Lógica**: PL/pgSQL (Migraciones y Funciones)
 - **Pruebas**: pgTAP o scripts de prueba en Node.js (Jest) contra el entorno local de Supabase.
 
-## 4. Modelo de Datos
-Las entidades principales son:
-- **users / profiles**: Usuarios del sistema y sus roles.
-- **locations**: Orígenes y destinos (Apartadó, Zungo, Capurganá, etc.)
-- **trips (viajes)**: Itinerarios publicados por los transportadores con capacidad y tarifas.
-- **reservations (reservas)**: Solicitudes de los comerciantes para ocupar capacidad en un viaje.
-- **audit_logs**: Registro de acciones críticas para trazabilidad.
+## 4. Estructura de Carpetas
+```text
+uraba-port-match/
+└── backend/
+    ├── supabase/
+    │   ├── migrations/      # Esquema, funciones RPC, RLS, vistas y triggers en SQL
+    │   └── seed.sql         # Datos de demostración
+    ├── docs/                # Documentación detallada (database.md, api.md)
+    ├── tests/               # Pruebas automatizadas (Jest)
+    ├── .env.example         # Variables de entorno
+    └── package.json         # Dependencias de pruebas
+```
+
+## 5. Modelo de Datos
+La base de datos PostgreSQL está normalizada e incluye:
+- **profiles (Usuarios)**: `id (UUID)`, `auth_user_id`, `nombre`, `telefono`, `documento`, `rol (COMERCIANTE, TRANSPORTADOR, ADMIN)`.
+- **locations (Ubicaciones)**: `id (UUID)`, `nombre`, `tipo`, `municipio`, `descripcion`.
+- **trips (Viajes)**: `id (UUID)`, `transportador_id`, `origen_id`, `destino_id`, `fecha_zarpe`, `hora_limite_recepcion`, `capacidad_total_kg`, `capacidad_disponible_kg`, `tarifa_por_kg`, `estado (PROGRAMADO, ABIERTO, CUPO_COMPLETO, etc.)`.
+- **reservations (Reservas)**: `id (UUID)`, `viaje_id`, `comerciante_id`, `peso_kg`, `volumen_m3`, `costo_total_cop`, `estado (PENDIENTE, CONFIRMADA, CANCELADA, RECIBIDA)`.
+- **system_settings**: Configuraciones dinámicas como la tarifa tradicional base para calcular el ahorro.
+- **audit_logs**: Trazabilidad de operaciones críticas.
 *(Ver `backend/docs/database.md` para detalles de relaciones y campos)*
 
 ## 5. Roles

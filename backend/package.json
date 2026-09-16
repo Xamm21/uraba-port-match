@@ -1,0 +1,16 @@
+{
+  "name": "uraba-port-match-backend",
+  "version": "1.0.0",
+  "description": "Backend logic and tests for UrabáPort Match",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
